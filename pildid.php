@@ -1,5 +1,5 @@
 <?php
-   $dirToRead = "../../pics/";
+   $dirToRead = "../pics/";
    //kuna tahan ainult pildifaile, siis filtreerin
    $picFileTypes = ["jpg", "jpeg", "png", "gif"];
    $picFiles = [];
