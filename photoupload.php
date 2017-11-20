@@ -28,7 +28,7 @@
 	$maxHeight = 400;
 	$marginRight = 0;
 	$marginBottom = 0;
-	
+	$comment = "";
 	
 	//Kas on pildi failitüüp
 	if(isset($_POST["submit"])) {
@@ -69,6 +69,7 @@
 		} else {
 			
 			
+			
 			$myPhoto = new Photoupload($_FILES["fileToUpload"]["tmp_name"], $imageFileType);
 			$myPhoto->readExif();
 			$myPhoto->resizeImage($maxWidth, $maxHeight);
@@ -98,7 +99,10 @@
 		<label>Valige pildifail:</label>
 		<input type="file" name="fileToUpload" id="fileToUpload">
 		<input type="submit" value="Lae üles" name="submit" id="submitPhoto"><span id="fileSizeError"></span>
-		
+		<br>
+		<!--<label>Lisage kommentaar: </label>
+		<input type="text" name="comment" id="comment">
+		-->
 	</form>
 	
 	<span><?php echo $notice; ?></span>
