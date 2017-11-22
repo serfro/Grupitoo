@@ -129,6 +129,16 @@
 		return $data;
 	}
 	
+	
+	
+	function reaAllComments(){
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT id, idea, ideaColor FROM vpuserideas WHERE userid = ? AND photoid = ? ORDER BY id DESC");
+		$stmt->bind_param("ii", $_SESSION["userId"], $photoid);
+		$stmt->bind_result($ideaId, $idea, $color);
+		$stmt->execute();
+		$stmt->fetch();
+	}
 	/*
 	$x = 5;
 	$y = 6;

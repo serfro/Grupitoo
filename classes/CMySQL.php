@@ -11,9 +11,9 @@ class CMySQL {
 
     // constructor
     function CMySQL() {
-        $this->sDbName = 'YOUR_DB_NAME';
-        $this->sDbUser = 'DB_USER_NAME';
-        $this->sDbPass = 'DB_USER_PASS';
+        $this->sDbName = 'if17_lawralex';
+        $this->sDbUser = 'if17';
+        $this->sDbPass = 'if17';
 
         // create db link
         $this->vLink = mysql_connect("localhost", $this->sDbUser, $this->sDbPass);

@@ -4,7 +4,7 @@ if (version_compare(phpversion(), "5.3.0", ">=")  == 1)
   error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 else
   error_reporting(E_ALL & ~E_NOTICE);
-require_once('functions.php'); // include service classes to work with database and comments
+require_once('classes/CMySQL.php'); // include service classes to work with database and comments
 require_once('classes/CMyComments.php');
 if ($_POST['action'] == 'accept_comment') {
     echo $GLOBALS['MyComments']->acceptComment();
@@ -12,7 +12,7 @@ if ($_POST['action'] == 'accept_comment') {
 }
 // prepare a list with photos
 $sPhotos = '';
-$aItems = $GLOBALS['MySQL']->getAll("SELECT * FROM `s281_photos` ORDER by `when` ASC"); // get photos info
+$aItems = $GLOBALS['MySQL']->getAll("SELECT * FROM `grphotos` ORDER by `when` ASC"); // get photos info
 foreach ($aItems as $i => $aItemInfo) {
     $sPhotos .= '<div class="photo"><img src="images/thumb_'.$aItemInfo['filename'].'" id="'.$aItemInfo['id'].'" /><p>'.$aItemInfo['title'].' item</p><i>'.$aItemInfo['description'].'</i></div>';
 }
@@ -32,8 +32,7 @@ foreach ($aItems as $i => $aItemInfo) {
 </head>
 <body>
     <header>
-        <h2>Facebook like photo gallery with comments</h2>
-        <a href="https://www.script-tutorials.com/facebook-like-photo-gallery-with-comments/" class="stuts">Back to original tutorial on <span>Script Tutorials</span></a>
+
     </header>
     <!-- Container with last photos -->
     <div class="container">

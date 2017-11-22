@@ -30,8 +30,7 @@ $dirToRead = "../pics/";
 	$comments;
 	$image;
      $dirToRead = glob("../pics/*.*");
-     for ($i=0; $i<count($dirToRead); $i++)
-      {
+     for ($i=0; $i<count($dirToRead); $i++){
         $image = $dirToRead[$i];
         $supported_file = array(
                 'gif',
@@ -48,8 +47,10 @@ $dirToRead = "../pics/";
             } else {
                 continue;
             }
-          }
+		}
        
+	   
+	
 require("header.php");
 ?>
 <body>
