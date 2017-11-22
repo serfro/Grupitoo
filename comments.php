@@ -1,5 +1,5 @@
 <?php
-
+require ("functions.php");
 $dirToRead = "../pics/";
 /*
 	//kuna tahan ainult pildifaile, siis filtreerin
@@ -27,10 +27,19 @@ $dirToRead = "../pics/";
 	$picToShow = $picFiles[];
 	*/
 	
-	$comments;
+	
 	$image;
      $dirToRead = glob("../pics/*.*");
-     for ($i=0; $i<count($dirToRead); $i++){
+     
+	
+       
+	
+	
+require("header.php");
+?>
+<body>
+	<?php
+	for ($i=0; $i<count($dirToRead); $i++){
         $image = $dirToRead[$i];
         $supported_file = array(
                 'gif',
@@ -41,21 +50,29 @@ $dirToRead = "../pics/";
 
          $ext = strtolower(pathinfo($image, PATHINFO_EXTENSION));
          if (in_array($ext, $supported_file)) {
+			echo $image."<br /><br />";
             echo '<img src="'.$image .'" alt="" />'."<br /><br />";
-			echo $image."<br />";
-            
+			$photoId = 
+			?>
+			<h4>Kommentaarid:</h4>
+			<div style="width: 40%">
+			<?php
+				$comments = readAllComments($comments, $photoId);
+				echo $comments; 
+			?>
+            <label>Sinu kommentaar: </label>
+			<input name="comment" type="text">
+			</br></br></br>
+			</div>
+			<?php
+			
+			
             } else {
                 continue;
             }
 		}
-       
-	   
+	?>
 	
-require("header.php");
-?>
-<body>
-	
-
 
 
 

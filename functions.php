@@ -131,13 +131,17 @@
 	
 	
 	
-	function reaAllComments(){
+	function readAllComments($fcomments, $fphotoId){
+		$fcomments = "";
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT id, idea, ideaColor FROM vpuserideas WHERE userid = ? AND photoid = ? ORDER BY id DESC");
-		$stmt->bind_param("ii", $_SESSION["userId"], $photoid);
-		$stmt->bind_result($ideaId, $idea, $color);
+		$stmt = $mysqli->prepare("SELECT comment FROM vpuserideas WHERE photoid = ? ORDER BY id DESC");
+		$stmt->bind_param("i", $fphotoId);
+		$stmt->bind_result($fcomments);
 		$stmt->execute();
 		$stmt->fetch();
+		$stmt->close();
+		$mysqli->close();
+		return $fcomments;
 	}
 	/*
 	$x = 5;
