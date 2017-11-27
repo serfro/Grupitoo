@@ -143,18 +143,17 @@
 		$mysqli->close();
 		return $fcomments;
 	}
-	function addPhotoData($filename){
+	function addPhotoData($filename, $thumbname, $alt, $privacy){
 		//echo $GLOBALS["serverHost"];
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("INSERT INTO grphotos (userid, name) VALUES (?, ?)");
+		$stmt = $mysqli->prepare("INSERT INTO grphotos2 (userid, filename, thumbname, alt, privacy) VALUES (?, ?, ?, ?, ?)");
 		echo $mysqli->error;
-		$stmt->bind_param("is", $_SESSION["userId"], $filename);
+		$stmt->bind_param("isssi", $_SESSION["userId"], $filename, $thumbname, $alt, $privacy);
 		//$stmt->execute();
 		if ($stmt->execute()){
 			$GLOBALS["notice"] .= "Foto andmete lisamine andmebaasi onnestus! ";
 		} else {
 			$GLOBALS["notice"] .= "Foto andmete lisamine andmebaasi ebaonnestus! ";
-			$stmt->error;
 		}
 		$stmt->close();
 		$mysqli->close();
