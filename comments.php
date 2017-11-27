@@ -29,7 +29,7 @@ $dirToRead = "../pics/";
 	
 	
 	$image;
-     $dirToRead = glob("../pics/*.*");
+     $dirToRead = selectPhotos();
      
 	
        
@@ -39,6 +39,11 @@ require("header.php");
 ?>
 <body>
 	<?php
+	
+	
+	
+	
+	/*
 	for ($i=0; $i<count($dirToRead); $i++){
         $image = $dirToRead[$i];
         $supported_file = array(
@@ -50,18 +55,21 @@ require("header.php");
 
          $ext = strtolower(pathinfo($image, PATHINFO_EXTENSION));
          if (in_array($ext, $supported_file)) {
-			echo $image."<br /><br />";
+			//echo $image."<br /><br />";
             echo '<img src="'.$image .'" alt="" />'."<br /><br />";
 			$photoId = 
 			?>
 			<h4>Kommentaarid:</h4>
 			<div style="width: 40%">
 			<?php
-				$comments = readAllComments($comments, $photoId);
-				echo $comments; 
+				//$comments = readAllComments($comments, $photoId);
+				//echo $comments; 
 			?>
             <label>Sinu kommentaar: </label>
-			<input name="comment" type="text">
+			</br></br>
+			<textarea name="comment" type="text"></textarea>
+			</br></br>
+			<input type="submit" value="Lisa" name="submit" id="submitComment">
 			</br></br></br>
 			</div>
 			<?php
@@ -74,7 +82,7 @@ require("header.php");
 	?>
 	
 
-
+*/
 
 
 <?php

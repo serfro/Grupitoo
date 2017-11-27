@@ -93,26 +93,27 @@
 			if($this->imageFileType == "jpg" or $this -> imageFileType == "jpeg") {
 				if(imagejpeg($this -> myImage, $target_file, 90)){
 					$notice = "true";
-				} else {
-					$notice .= "false";
 				}
 			}
 			if($this ->imageFileType == "png") {
 				if(imagepng($this -> myImage, $target_file, 6)){
 					$notice = "true";
-				} else {
-					$notice .= "false";
 				}
 			}
 			if($this ->imageFileType == "gif") {
 				if(imagegif($this -> myImage, $target_file)){
 					$notice = "true";
-				} else {
-					$notice .= "false";
 				}
 			}
 		}
-		
+		public function photoToDb(){
+			$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+			$stmt = $mysqli->prepare("INSERT INTO grphotos (userid, name) VALUES(?, ?)");
+			$stmt->bind_param("is", $_SESSION["userId"], $target_file);
+			$stmt->execute();
+			$stmt->close();
+			$mysqli->close();
+		}
 		public function clearImages(){
 			imagedestroy($this->myImage);
 			imagedestroy($this->myTempImage);

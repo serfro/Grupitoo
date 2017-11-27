@@ -73,24 +73,34 @@
 			$myPhoto = new Photoupload($_FILES["fileToUpload"]["tmp_name"], $imageFileType);
 			$myPhoto->readExif();
 			$myPhoto->resizeImage($maxWidth, $maxHeight);
+			
 			//$myPhoto->addWatermark();
 			//$myPhoto->addTextWatermark($myPhoto->exifToImage);
 			//$myPhoto->addTextWatermark("hmv_foto");
 			$myPhoto->savePhoto($target_dir, $target_file);
+			$myPhoto->photoToDb($target_dir, $target_file);
 			$myPhoto->clearImages();
 			unset($myPhoto);
-	}
+			if(isset($_POST["altText"])){
+					$alt = $_POST["altText"];
+				} else {
+					$alt = "Foto";
+				}
+				addPhotoData($target_file);
+		}
 	} else {
 		$notice = "Palun valige kõigepelt pildifail";
 	}
-		
+				
 
 	
 	require("header.php");
 ?>
+<script type="text/javascript" src="javascript/checkFileSize.js" defer></script>
+</head>
 <body>
-	<h1>Lae pilt</h1>
-	<p></p>
+	<h1><?php echo $_SESSION["firstname"] ." " .$_SESSION["lastname"]; ?></h1>
+	<p>See veebileht on loodud veebiprogrammeerimise kursusel ning ei sisalda mingisugust tõsiseltvõetavat sisu.</p>
 	<p><a href="?logout=1">Logi välja</a>!</p>
 	<p><a href="main.php">Pealeht</a></p>
 	<hr>
@@ -98,15 +108,17 @@
 	<form action="photoupload.php" method="post" enctype="multipart/form-data">
 		<label>Valige pildifail:</label>
 		<input type="file" name="fileToUpload" id="fileToUpload">
-		<input type="submit" value="Lae üles" name="submit" id="submitPhoto"><span id="fileSizeError"></span>
 		<br>
-		<!--<label>Lisage kommentaar: </label>
-		<input type="text" name="comment" id="comment">
-		-->
+		<label>Alt tekst: </label><input type="text" name="altText">
+		<br>
+		<input type="radio" name="privacy" value="1"><label>Avalik</label>
+		<input type="radio" name="privacy" value="2"><label>Registreeritud kasutajatele</label>
+		<input type="radio" name="privacy" value="3" checked><label>Isiklik</label>
+		<br>
+		<input type="submit" value="Lae üles" name="submit" id="photoSubmit"><span id="fileSizeError"></span>
 	</form>
 	
-	<span><?php echo $notice; ?></span>
-	
+	<span id="resultNotice"><?php echo $notice; ?></span>
 	<?php
 	echo '<script type="text/javascript" src="javascript/checkFileSize.js"></script>';
 	require("footer.php");

@@ -134,7 +134,7 @@
 	function readAllComments($fcomments, $fphotoId){
 		$fcomments = "";
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT comment FROM vpuserideas WHERE photoid = ? ORDER BY id DESC");
+		$stmt = $mysqli->prepare("SELECT comment FROM grcomments WHERE photoid = ? ORDER BY id DESC");
 		$stmt->bind_param("i", $fphotoId);
 		$stmt->bind_result($fcomments);
 		$stmt->execute();
@@ -143,6 +143,50 @@
 		$mysqli->close();
 		return $fcomments;
 	}
+	function addPhotoData($filename){
+		//echo $GLOBALS["serverHost"];
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("INSERT INTO grphotos (userid, name) VALUES (?, ?)");
+		echo $mysqli->error;
+		$stmt->bind_param("is", $_SESSION["userId"], $filename);
+		//$stmt->execute();
+		if ($stmt->execute()){
+			$GLOBALS["notice"] .= "Foto andmete lisamine andmebaasi onnestus! ";
+		} else {
+			$GLOBALS["notice"] .= "Foto andmete lisamine andmebaasi ebaonnestus! ";
+			$stmt->error;
+		}
+		$stmt->close();
+		$mysqli->close();
+	}
+	/*function selectPhotoId($fphotoId){
+		$fphotoId = "";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT id FROM grphotos WHERE  = ? ORDER BY id DESC");
+		$stmt->bind_param("i", $fphotoId);
+		$stmt->bind_result($fcomments);
+		$stmt->execute();
+		while ($stmt->fetch()){
+			$ .= '<p style="background-color: ' .$color .'">' .$idea .' | <a href="ideaedit.php?id=' .$ideaId .'">Toimeta</a>' ."</p> \n";
+			//link: <a href="ideaedit.php?id=4"> Toimeta</a>
+		$stmt->close();
+		$mysqli->close();
+		return $fphotoId
+	}*/
+	
+	/*function selectPhoto(){
+		$photos = ""
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT filename FROM grphotos ORDER BY id DESC");
+		$stmt->bind_param("i", $fphotoId);
+		$stmt->bind_result($fcomments);
+		$stmt->execute();
+		while ($stmt->fetch()){
+			$ .= '<p style="background-color: ' .$color .'">' .$idea .' | <a href="ideaedit.php?id=' .$ideaId .'">Toimeta</a>' ."</p> \n";
+			//link: <a href="ideaedit.php?id=4"> Toimeta</a>
+		$stmt->close();
+		$mysqli->close();
+	}*/
 	/*
 	$x = 5;
 	$y = 6;
