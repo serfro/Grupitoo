@@ -64,7 +64,7 @@ $query = mysqli_query($con,"SELECT id FROM grphotos");
 while($row = mysqli_fetch_assoc($query))
 {
     $IDstore = $row['id'];
-    echo "<img src='getImage.php?id=".$IDstore."'/>";
+    echo "<img src='../pics/?id=".$IDstore."'/>";
 }
 
 

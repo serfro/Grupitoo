@@ -1,7 +1,8 @@
 <?php
 	require("../../config.php");
 	$database = "if17_lawralex";
-	
+	$photo_dir = "../pics/";
+	$thumb_dir = "../thumbnails/";
 	//alustan sessiooni
 	session_start();
 	
@@ -143,10 +144,131 @@
 		$mysqli->close();
 		return $fcomments;
 	}
+		function latestPicture($privacy){
+		//$privacy = 1;
+		$html = "<p>Varskeid avalikke pilte pole! Vabandame!</p>";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM grphotos2 WHERE id=(SELECT MAX(id) FROM grphotos2 WHERE  privacy<=?)");
+		echo $mysqli->error;
+		$stmt->bind_param("i", $privacy);
+		$stmt->bind_result($filename, $thumbnail, $alt);
+		$stmt->execute();
+		echo $stmt->error;
+		if($stmt->fetch()){
+			
+			$html = '<img src="' .$GLOBALS["photo_dir"] .$filename .'" alt="' .$alt .'" class="rounded">';
+		}
+		$stmt->close();
+		$mysqli->close();
+		return $html;
+	}
+	
+	function showAllThumbnails(){
+		$html = "<p>Te pole ise uhtki pilti ules laadinud!</p>";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM grphotos2 WHERE userid = ?");
+		$stmt->bind_param("i", $_SESSION["userId"]);
+		$stmt->bind_result($filename, $thumbnail, $alt);
+		$stmt->execute();
+		//koik pisipildid
+		if($stmt->fetch()){
+			$html = '<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs">' ."\n";
+		}
+		while ($stmt->fetch()){
+			$html .= "\t" .'<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs">' ."\n";
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+		echo $html;
+	}
+	
+	function showThumbnailsPage($page, $limit){
+		$skip = ($page - 1) * $limit;
+		$html = "<p>Te pole ise uhtki pilti ules laadinud!</p>";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		//$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM vpphotos WHERE userid = ?");
+		$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM grphotos2 WHERE userid = ? ORDER BY id DESC LIMIT " .$skip ."," .$limit);
+		$stmt->bind_param("i", $_SESSION["userId"]);
+		$stmt->bind_result($filename, $thumbnail, $alt);
+		
+		$stmt->execute();
+		
+		
+		
+		//koik pisipildid
+		if($stmt->fetch()){
+			$html = '<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs">' ."\n";
+		}
+		while ($stmt->fetch()){
+			$html .= "\t" .'<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs">' ."\n";
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+		echo $html;
+	}
+	
+	function showSharedThumbnailsPage($page, $limit){
+		$skip = ($page - 1) * $limit;
+		$html = "<p>Te pole ise uhtki pilti ules laadinud!</p>";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		//$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM vpphotos WHERE userid = ?");
+		//$stmt = $mysqli->prepare("SELECT filename, thumbnail, alt FROM vpphotos WHERE privacy < ? ORDER BY id DESC LIMIT " .$skip ."," .$limit);
+		$stmt = $mysqli->prepare("SELECT firstname, lastname, filename, thumbnail, alt FROM grphotos2, vpusers WHERE grphotos2.userid = vpusers.id AND grphotos2.privacy < ? ORDER BY grphotos2.id DESC LIMIT " .$skip ."," .$limit);
+		$privacyVal = 3;
+		$stmt->bind_param("i", $privacyVal);
+		//$stmt->bind_result($filename, $thumbnail, $alt);
+		$stmt->bind_result($firstname, $lastname, $filename, $thumbnail, $alt);
+		
+		$stmt->execute();
+				
+		//koik pisipildid
+		/*if($stmt->fetch()){
+			$html = '<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs">' ."\n";
+		}*/
+		$html = "\n";
+		while ($stmt->fetch()){
+			$html .= "\t" .'<div class="thumbGallery">' ."\n";
+			$html .= "\t \t" .'<img src="' .$GLOBALS["thumb_dir"] .$thumbnail .'" alt="' .$alt .'" id="' .$filename .'" class="thumbs" title="' .$firstname ." " .$lastname .'">' ."\n";
+			$html .= "\t \t <p>" .$firstname ." " .$lastname ."</p> \n";
+			$html .= "\t </div> \n";
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+		echo $html;
+	}
+	
+	function findNumberOfImages(){
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT COUNT(*) FROM `grphotos` WHERE userid = ?");
+		$stmt->bind_param("i", $_SESSION["userId"]);
+		$stmt->bind_result($imageCount);
+		$stmt->execute();
+		$stmt->fetch();
+		$stmt->close();
+		$mysqli->close();
+		return $imageCount;
+	}
+	
+	function findNumberOfSharedImages(){
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT COUNT(*) FROM `grphotos2` WHERE privacy < ?");
+		$privacyVal = 3;
+		$stmt->bind_param("i", $privacyVal);
+		$stmt->bind_result($imageCount);
+		$stmt->execute();
+		$stmt->fetch();
+		$stmt->close();
+		$mysqli->close();
+		return $imageCount;
+	}
+	
 	function addPhotoData($filename, $thumbname, $alt, $privacy){
 		//echo $GLOBALS["serverHost"];
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("INSERT INTO grphotos2 (userid, filename, thumbname, alt, privacy) VALUES (?, ?, ?, ?, ?)");
+		$stmt = $mysqli->prepare("INSERT INTO grphotos2 (userid, filename, thumbnail, alt, privacy) VALUES (?, ?, ?, ?, ?)");
 		echo $mysqli->error;
 		$stmt->bind_param("isssi", $_SESSION["userId"], $filename, $thumbname, $alt, $privacy);
 		//$stmt->execute();
@@ -158,26 +280,10 @@
 		$stmt->close();
 		$mysqli->close();
 	}
-	/*function selectPhotoId($fphotoId){
-		$fphotoId = "";
-		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT id FROM grphotos WHERE  = ? ORDER BY id DESC");
-		$stmt->bind_param("i", $fphotoId);
-		$stmt->bind_result($fcomments);
-		$stmt->execute();
-		while ($stmt->fetch()){
-			$ .= '<p style="background-color: ' .$color .'">' .$idea .' | <a href="ideaedit.php?id=' .$ideaId .'">Toimeta</a>' ."</p> \n";
-			//link: <a href="ideaedit.php?id=4"> Toimeta</a>
-		$stmt->close();
-		$mysqli->close();
-		return $fphotoId
-	}*/
-	
 	/*function selectPhoto(){
 		$photos = ""
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT filename FROM grphotos ORDER BY id DESC");
-		$stmt->bind_param("i", $fphotoId);
+		$stmt = $mysqli->prepare("SELECT filename FROM grphotos2 DESC");
 		$stmt->bind_result($fcomments);
 		$stmt->execute();
 		while ($stmt->fetch()){
