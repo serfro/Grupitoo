@@ -1,11 +1,8 @@
 <?php
-
 class CMyComments {
-
     // constructor
     function CMyComments() {
     }
-
     // return comments block
     function getComments($i) {
         // draw last 10 comments
@@ -20,7 +17,6 @@ class CMyComments {
 </div>
 EOF;
         }
-
         return <<<EOF
 <div class="comments" id="comments">
     <h2>Comments</h2>
@@ -37,13 +33,11 @@ EOF;
 </div>
 EOF;
     }
-
     function acceptComment() {
         $iItemId = (int)$_POST['id']; // prepare necessary information
         $sIp = $this->getVisitorIP();
         $sName = $GLOBALS['MySQL']->escape(strip_tags($_POST['name']));
         $sText = $GLOBALS['MySQL']->escape(strip_tags($_POST['text']));
-
         if ($sName && $sText) {
             // check - if there is any recent post from you or not
             $iOldId = $GLOBALS['MySQL']->getOne("SELECT `c_item_id` FROM `s281_items_cmts` WHERE `c_item_id` = '{$iItemId}' AND `c_ip` = '{$sIp}' AND `c_when` >= UNIX_TIMESTAMP() - 600 LIMIT 1");
@@ -51,7 +45,6 @@ EOF;
                 // if everything is fine - allow to add comment
                 $GLOBALS['MySQL']->res("INSERT INTO `s281_items_cmts` SET `c_item_id` = '{$iItemId}', `c_ip` = '{$sIp}', `c_when` = UNIX_TIMESTAMP(), `c_name` = '{$sName}', `c_text` = '{$sText}'");
                 $GLOBALS['MySQL']->res("UPDATE `s281_photos` SET `comments_count` = `comments_count` + 1 WHERE `id` = '{$iItemId}'");
-
                 // and print out last 10 comments
                 $sOut = '';
                 $aComments = $GLOBALS['MySQL']->getAll("SELECT * FROM `s281_items_cmts` WHERE `c_item_id` = '{$iItemId}' ORDER BY `c_when` DESC LIMIT 10");
@@ -69,7 +62,6 @@ EOF;
         }
         return 1;
     }
-
     // get visitor IP
     function getVisitorIP() {
         $ip = "0.0.0.0";
@@ -86,7 +78,5 @@ EOF;
         return $ip;
     }
 }
-
 $GLOBALS['MyComments'] = new CMyComments();
-
 ?>

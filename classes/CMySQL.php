@@ -1,5 +1,6 @@
 <?php
-
+require("../../config.php");
+$database = "if17_lawralex";
 class CMySQL {
 
     // variables
@@ -11,17 +12,15 @@ class CMySQL {
 
     // constructor
     function CMySQL() {
-        $this->sDbName = 'if17_lawralex';
-        $this->sDbUser = 'if17';
-        $this->sDbPass = 'if17';
+        
 
         // create db link
-        $this->vLink = mysql_connect("localhost", $this->sDbUser, $this->sDbPass);
+        $mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 
         //select the database
-        mysql_select_db($this->sDbName, $this->vLink);
+       
 
-        mysql_query("SET names UTF8");
+        $stmt = $mysqli->query("SET names UTF8");
     }
 
     // return one value result
@@ -42,7 +41,8 @@ class CMySQL {
     function res($query, $error_checking = true) {
         if(!$query)
             return false;
-        $res = mysql_query($query, $this->vLink);
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+        $res = $mysqli->query($query);
         if (!$res)
             $this->error('Database query error', false, $query);
         return $res;
