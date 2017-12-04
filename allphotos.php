@@ -2,7 +2,8 @@
 	require("functions.php");
 	
 	$limit = 20;
-	
+	$photoId;
+	$fileName;
 	//kui pole sisse logitud, liigume login lehele
 	if(!isset($_SESSION["userId"])){
 		header("Location: login.php");
@@ -30,6 +31,37 @@
 			header("Location: ?page=" .ceil($imageCount / $limit));
 		}
 	}
+	
+	/*
+	
+	if....kui valitud mingi pilt
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT id FROM grphotos2 WHERE filename=? ");
+		$stmt->bind_param("i", $fileName);
+		$stmt->bind_result($photoId);
+		$stmt->execute();
+		$stmt->close();
+		$mysqli->close();
+	*/
+	
+	
+	if (!empty($_POST["comment"]) and isset($_POST["submit"])){
+		
+		
+		$insertComment = $_POST["comment"];
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("INSERT INTO grcomments (userid, photo_id, text) VALUES (?, ?, ?)");
+		$stmt->bind_param("is", $_SESSION["userId"], $photoId, $insertComment);
+		$stmt->execute();
+		$stmt->close();
+		$mysqli->close();
+		
+	}
+	
+	
+	
+	
+	
 	require("header.php");
 ?>
 
@@ -55,7 +87,7 @@
 		<!-- The Close Button -->
 		<span class="close">&times;</span>
 		<!-- Modal Content (The Image) -->
-		<img class="modal-content" src="../../graphics/hmv_safe.jpg" alt="" id="modalImage">
+		<img class="modal-content" src="../graphics/hmv_logo.png" alt="" id="modalImage">
 		<!-- Modal Caption (Image Text) -->
 		<div id="caption"></div>
 	</div>
@@ -84,9 +116,40 @@
 	<?php
 		showSharedThumbnailsPage($_GET["page"], $limit);
 	?>
+	
+
+	
 	</div>
 	</div>
 	</div>
+	</div>
+	
+	<?php
+		$comment = "";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT text FROM grcomments WHERE photo_id = ?");
+		$stmt->bind_result($photoId);
+		
+		$stmt->execute();
+		$stmt->fetch();
+		$stmt->close();
+		$mysqli->close();
+		echo $comment;
+	?>
+	
+	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+	<input type="text" name = "comment" id = "comment">
+	<input type="submit" name = "submit" value = "Salvesta" id = "submit">
+	</form>
+	
+	
+
+</body>
+
+</html>
+
+
+
 	<?php
 		require("footer.php");
 	?>

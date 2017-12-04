@@ -239,6 +239,9 @@
 		$mysqli->close();
 		echo $html;
 	}
+	function showComments(){
+		
+	}
 	
 	function findNumberOfImages(){
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
