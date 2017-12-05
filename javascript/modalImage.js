@@ -25,9 +25,13 @@ function openModal(e){
 		captionText.innerHTML = e.target.title + ": " + e.target.alt;
 	} else {
 		captionText.innerHTML = e.target.alt;
+		
 	}
 }
 
 function closeModal(){ 
   modal.style.display = "none";
 }
+
+
+

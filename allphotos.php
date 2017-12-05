@@ -2,7 +2,7 @@
 	require("functions.php");
 	
 	$limit = 20;
-	$photoId;
+	$photoId = 10;
 	$fileName;
 	//kui pole sisse logitud, liigume login lehele
 	if(!isset($_SESSION["userId"])){
@@ -51,7 +51,7 @@
 		$insertComment = $_POST["comment"];
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 		$stmt = $mysqli->prepare("INSERT INTO grcomments (userid, photo_id, text) VALUES (?, ?, ?)");
-		$stmt->bind_param("is", $_SESSION["userId"], $photoId, $insertComment);
+		$stmt->bind_param("iis", $_SESSION["userId"], $photoId, $insertComment);
 		$stmt->execute();
 		$stmt->close();
 		$mysqli->close();
@@ -124,26 +124,30 @@
 	</div>
 	</div>
 	
-	<?php
-		$comment = "";
-		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT text FROM grcomments WHERE photo_id = ?");
-		$stmt->bind_result($photoId);
-		
-		$stmt->execute();
-		$stmt->fetch();
-		$stmt->close();
-		$mysqli->close();
-		echo $comment;
-	?>
-	
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
 	<input type="text" name = "comment" id = "comment">
-	<input type="submit" name = "submit" value = "Salvesta" id = "submit">
+	<input type="submit" name = "submit" value = "Salvesta" id = "commentSubmit">
+	
 	</form>
+	<?php
 	
-	
-
+		
+		$date = "";
+		$comments = "";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli->prepare("SELECT text, created FROM grcomments WHERE photo_id = ? ORDER BY created DESC LIMIT 5");
+		$stmt->bind_param("i", $photoId);
+		$stmt->bind_result($comments, $date);
+		
+		$stmt->execute();
+		while($stmt->fetch()) {
+			echo $comments ." - " .$date ."<br>" ."<br>";
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+	?>
+	<button onclick="openModal()" id = "comment1">Try it</button>
 </body>
 
 </html>
