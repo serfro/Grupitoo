@@ -2,7 +2,7 @@
 	require("functions.php");
 	
 	$limit = 20;
-	$photoId = 10;
+	
 	$fileName;
 	//kui pole sisse logitud, liigume login lehele
 	if(!isset($_SESSION["userId"])){
@@ -43,7 +43,7 @@
 		$stmt->close();
 		$mysqli->close();
 	*/
-	
+	$photoId = 10;
 	
 	if (!empty($_POST["comment"]) and isset($_POST["submit"])){
 		

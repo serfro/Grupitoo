@@ -117,7 +117,7 @@
 	<div class="row">
 	<div class="col-sm-2">
 	<p><a href="?logout=1">Logi välja</a></p>
-	<p><a href="main.php">Pealeht</a></p>
+	<p><a href="index.php">Pealeht</a></p>
 	</div>
 	<div class="col-sm-8">
 	<h2>Foto üleslaadimine</h2>
