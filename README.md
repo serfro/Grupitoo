@@ -13,7 +13,7 @@ Fotode ja kommentaaride väljastamise kood
 		$comments = "<p>kommentaare pole</p>";
 		
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT filename, id, alt, userid FROM grphotos2");
+		$stmt = $mysqli->prepare("SELECT filename, id, alt, userid FROM grphotos2 ORDER BY created DESC LIMIT 5");
 		$stmt->bind_result($fileName, $photoId, $photoAlt, $photoUserId);
 		$stmt->execute();
 		
