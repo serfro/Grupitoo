@@ -5,7 +5,9 @@ Eesmärk: Tahetakse oma pilte jagada anonüümselt. Iga pildi kohta saab anda om
 Sihtrühm: Noored, kes saavad anonüümselt jagada oma arvamusi.
 Funktsionaalususe loetelu prioriteedi: lood kasutaja lodi sisse, laed pildi üles ja/või saad pilte kommenteerida
 
-function showCommentsAndPhotos(){
+
+
+	function showCommentsAndPhotos(){
 		$photoAndComments = "<p>Te pole ise uhtki pilti ules laadinud!</p>";
 		$comments = "<p>kommentaare pole</p>";
 		
